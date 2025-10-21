@@ -7,7 +7,10 @@
     "start": "node server.js",
     "build:css": "tailwindcss -c tailwind.config.js -i ./src/styles.css -o ./public/tailwind.css --minify",
     "watch:css": "tailwindcss -c tailwind.config.js -i ./src/styles.css -o ./public/tailwind.css --watch",
-    "dev": "concurrently \"npm:watch:css\" \"nodemon server.js\""
+    "dev": "concurrently \"npm:watch:css\" \"nodemon server.js\"",
+    "build": "npm run build:css",
+    "prod": "npm run build && node server.js",
+    "update-browserslist": "npx update-browserslist-db@latest"
   },
   "keywords": [
     "markdown",

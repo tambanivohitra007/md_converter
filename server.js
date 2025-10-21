@@ -905,16 +905,20 @@ app.post('/convert', upload.single('markdown'), async (req, res) => {
   }
 });
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
-});
-
 // Global error handler (Express 5)
 // eslint-disable-next-line no-unused-vars
 app.use((err, _req, res, _next) => {
   console.error('Unhandled error:', err);
   res.status(500).json({ error: 'Internal Server Error' });
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok', 
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString() 
+  });
 });
 
 // Process-level error logging
