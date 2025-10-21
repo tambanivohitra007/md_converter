@@ -344,6 +344,7 @@ async function convertToPDF(markdownContent, filename, jobId, opts = {}) {
       color: #666;
       margin: 20px 0;
     }
+  </style>
 </head>
 <body>
   ${htmlContent}
