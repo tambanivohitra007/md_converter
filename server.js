@@ -196,8 +196,148 @@ async function processMermaidDiagrams(markdownContent, format, opts = {}) {
   }
 }
 
+// Generate theme-specific CSS
+function getThemeCSS(themeName = 'default', fontFamily = 'system', codeTheme = 'github') {
+  const themes = {
+    default: {
+      bgPrimary: '#ffffff',
+      bgSecondary: '#f9fafb',
+      textPrimary: '#1f2937',
+      textSecondary: '#6b7280',
+      borderColor: '#e5e7eb',
+      primaryColor: '#4f46e5',
+      codeBackground: '#f6f8fa',
+      codeBorder: '#d0d7de'
+    },
+    github: {
+      bgPrimary: '#ffffff',
+      bgSecondary: '#f6f8fa',
+      textPrimary: '#24292f',
+      textSecondary: '#57606a',
+      borderColor: '#d0d7de',
+      primaryColor: '#0969da',
+      codeBackground: '#f6f8fa',
+      codeBorder: '#d0d7de'
+    },
+    vscode: {
+      bgPrimary: '#1e1e1e',
+      bgSecondary: '#252526',
+      textPrimary: '#d4d4d4',
+      textSecondary: '#858585',
+      borderColor: '#3e3e42',
+      primaryColor: '#007acc',
+      codeBackground: '#1e1e1e',
+      codeBorder: '#3e3e42'
+    },
+    dracula: {
+      bgPrimary: '#282a36',
+      bgSecondary: '#21222c',
+      textPrimary: '#f8f8f2',
+      textSecondary: '#6272a4',
+      borderColor: '#44475a',
+      primaryColor: '#bd93f9',
+      codeBackground: '#21222c',
+      codeBorder: '#44475a'
+    },
+    nord: {
+      bgPrimary: '#2e3440',
+      bgSecondary: '#3b4252',
+      textPrimary: '#eceff4',
+      textSecondary: '#d8dee9',
+      borderColor: '#4c566a',
+      primaryColor: '#88c0d0',
+      codeBackground: '#3b4252',
+      codeBorder: '#4c566a'
+    },
+    solarized: {
+      bgPrimary: '#fdf6e3',
+      bgSecondary: '#eee8d5',
+      textPrimary: '#657b83',
+      textSecondary: '#93a1a1',
+      borderColor: '#eee8d5',
+      primaryColor: '#268bd2',
+      codeBackground: '#eee8d5',
+      codeBorder: '#93a1a1'
+    }
+  };
+  
+  const fonts = {
+    system: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
+    serif: "Georgia, 'Times New Roman', Times, serif",
+    'sans-serif': "Arial, Helvetica, 'Helvetica Neue', sans-serif",
+    monospace: "'Courier New', Courier, 'Lucida Console', Monaco, monospace"
+  };
+  
+  const codeThemes = {
+    github: {
+      background: '#f6f8fa',
+      border: '#d0d7de',
+      color: '#24292f'
+    },
+    monokai: {
+      background: '#272822',
+      border: '#3e3d32',
+      color: '#f8f8f2'
+    },
+    dracula: {
+      background: '#282a36',
+      border: '#44475a',
+      color: '#f8f8f2'
+    },
+    nord: {
+      background: '#2e3440',
+      border: '#3b4252',
+      color: '#d8dee9'
+    },
+    'atom-one-dark': {
+      background: '#282c34',
+      border: '#3e4451',
+      color: '#abb2bf'
+    },
+    'tomorrow-night': {
+      background: '#1d1f21',
+      border: '#373b41',
+      color: '#c5c8c6'
+    }
+  };
+  
+  const theme = themes[themeName] || themes.default;
+  const fontFamilyValue = fonts[fontFamily] || fonts.system;
+  const codeStyle = codeThemes[codeTheme] || codeThemes.github;
+  
+  return `
+    :root {
+      --bg-primary: ${theme.bgPrimary};
+      --bg-secondary: ${theme.bgSecondary};
+      --bg-sidebar: ${theme.bgSecondary};
+      --text-primary: ${theme.textPrimary};
+      --text-secondary: ${theme.textSecondary};
+      --border-color: ${theme.borderColor};
+      --primary-color: ${theme.primaryColor};
+      --code-background: ${codeStyle.background};
+      --code-border: ${codeStyle.border};
+      --code-color: ${codeStyle.color};
+      --font-family: ${fontFamilyValue};
+    }
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-family);
+    }
+    code {
+      background: var(--code-background);
+      border: 1px solid var(--code-border);
+      color: var(--code-color);
+    }
+    pre code {
+      background: var(--code-background);
+      color: var(--code-color);
+    }
+  `;
+}
+
 // Convert to HTML with sidebar navigation
-async function convertToHTML(markdownContent, filename, jobId) {
+async function convertToHTML(markdownContent, filename, jobId, options = {}) {
   updateProgress(jobId, 1, 'Starting');
   // Pre-render Mermaid diagrams to images (like PDF/DOCX)
   const processedContent = await processMermaidDiagrams(markdownContent, 'pdf', { jobId, start: 5, end: 50 });
@@ -231,6 +371,13 @@ async function convertToHTML(markdownContent, filename, jobId) {
   
   updateProgress(jobId, 85, 'Generating HTML');
   
+  // Get theme CSS
+  const themeCSS = getThemeCSS(
+    options.outputTheme || 'default',
+    options.fontFamily || 'system',
+    options.codeTheme || 'github'
+  );
+  
   const fullHTML = `
 <!DOCTYPE html>
 <html lang="en">
@@ -244,18 +391,12 @@ async function convertToHTML(markdownContent, filename, jobId) {
       padding: 0;
       box-sizing: border-box;
     }
+    ${themeCSS}
     :root {
       --sidebar-width: 280px;
-      --primary-color: #4f46e5;
-      --border-color: #e5e7eb;
-      --bg-sidebar: #f9fafb;
-      --text-primary: #1f2937;
-      --text-secondary: #6b7280;
     }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       line-height: 1.7;
-      color: var(--text-primary);
       display: flex;
       min-height: 100vh;
     }
@@ -343,19 +484,19 @@ async function convertToHTML(markdownContent, filename, jobId) {
       margin: 1em 0;
     }
     code {
-      background-color: #f4f4f4;
+      background-color: var(--code-background);
       padding: 2px 6px;
       border-radius: 4px;
       font-family: 'Courier New', Consolas, monospace;
-      font-size: 0.9em;
+      font-size: 0.9em; color: var(--code-color);
     }
     pre {
-      background-color: #f4f4f4;
+      background-color: var(--code-background);
       padding: 16px;
       border-radius: 8px;
       overflow-x: auto;
       margin: 1.5em 0;
-      border-left: 4px solid var(--primary-color);
+      border: 1px solid var(--code-border);
     }
     pre code {
       background-color: transparent;
@@ -386,7 +527,7 @@ async function convertToHTML(markdownContent, filename, jobId) {
       background-color: #fafafa;
     }
     blockquote {
-      border-left: 4px solid var(--primary-color);
+      border: 1px solid var(--code-border);
       padding-left: 20px;
       color: var(--text-secondary);
       margin: 1.5em 0;
@@ -421,6 +562,7 @@ async function convertToHTML(markdownContent, filename, jobId) {
         display: block;
       }
     }
+    ${options.customCSS || ''}
   </style>
 </head>
 <body>
@@ -467,11 +609,19 @@ async function convertToPDF(markdownContent, filename, jobId, opts = {}) {
     headerAlign = 'left', // left|center|right
     footerAlign = 'center', // left|center|right
     includeDate = false,
+    outputTheme = 'default',
+    fontFamily = 'system',
+    codeTheme = 'github',
+    pageSize = 'A4',
+    customCSS = ''
   } = opts;
   updateProgress(jobId, 1, 'Starting');
   const processedContent = await processMermaidDiagrams(markdownContent, 'pdf', { jobId, start: 5, end: 60 });
   const htmlContent = marked(processedContent);
   updateProgress(jobId, 70, 'Preparing PDF');
+  
+  // Get theme CSS
+  const themeCSS = getThemeCSS(outputTheme, fontFamily, codeTheme);
   
   const fullHTML = `
 <!DOCTYPE html>
@@ -480,25 +630,26 @@ async function convertToPDF(markdownContent, filename, jobId, opts = {}) {
   <meta charset="UTF-8">
   <title>${filename}</title>
   <style>
+    ${themeCSS}
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       line-height: 1.6;
       max-width: 900px;
       margin: 0 auto;
       padding: 20px;
-      color: #333;
     }
     code {
-      background-color: #f4f4f4;
+      background-color: var(--code-background);
       padding: 2px 6px;
       border-radius: 3px;
       font-family: 'Courier New', monospace;
+      color: var(--code-color);
     }
     pre {
-      background-color: #f4f4f4;
+      background-color: var(--code-background);
       padding: 15px;
       border-radius: 5px;
       overflow-x: auto;
+      border: 1px solid var(--code-border);
     }
     pre code {
       background-color: transparent;
@@ -516,19 +667,20 @@ async function convertToPDF(markdownContent, filename, jobId, opts = {}) {
       margin: 20px 0;
     }
     table th, table td {
-      border: 1px solid #ddd;
+      border: 1px solid var(--border-color);
       padding: 12px;
       text-align: left;
     }
     table th {
-      background-color: #f4f4f4;
+      background-color: var(--bg-secondary);
     }
     blockquote {
-      border-left: 4px solid #ddd;
+      border-left: 4px solid var(--border-color);
       padding-left: 20px;
-      color: #666;
+      color: var(--text-secondary);
       margin: 20px 0;
     }
+    ${customCSS}
   </style>
 </head>
 <body>
@@ -546,6 +698,18 @@ async function convertToPDF(markdownContent, filename, jobId, opts = {}) {
     const page = await browser.newPage();
     await page.setContent(fullHTML, { waitUntil: 'networkidle0' });
     updateProgress(jobId, 85, 'Rendering PDF');
+    
+    const pdfOptions = {
+      format: pageSize,
+      margin: {
+        top: '20mm',
+        right: '15mm',
+        bottom: '20mm',
+        left: '15mm'
+      },
+      printBackground: true
+    };
+    
     const justifyMap = { left: 'flex-start', center: 'center', right: 'flex-end' };
     const headerStr = headerText ? headerText.replace(/</g, '&lt;').replace(/>/g, '&gt;') : filename;
     const dateStr = includeDate ? new Date().toLocaleDateString() : '';
@@ -605,12 +769,12 @@ async function convertToDOCX(markdownContent, filename, jobId, opts = {}) {
       line-height: 1.6;
     }
     code {
-      background-color: #f4f4f4;
+      background-color: var(--code-background);
       padding: 2px 6px;
       font-family: 'Courier New', monospace;
     }
     pre {
-      background-color: #f4f4f4;
+      background-color: var(--code-background);
       padding: 15px;
     }
     pre code {
@@ -659,11 +823,19 @@ app.post('/convert', upload.single('markdown'), async (req, res) => {
     }
     
     const format = req.body.format;
-  const headerText = (req.body.headerText || '').toString().slice(0, 200);
-  const pageNumbers = req.body.pageNumbers === undefined ? true : (String(req.body.pageNumbers).toLowerCase() !== 'false');
-  const headerAlign = ['left', 'center', 'right'].includes(req.body.headerAlign) ? req.body.headerAlign : 'left';
-  const footerAlign = ['left', 'center', 'right'].includes(req.body.footerAlign) ? req.body.footerAlign : 'center';
-  const includeDate = String(req.body.includeDate).toLowerCase() === 'true';
+    const headerText = (req.body.headerText || '').toString().slice(0, 200);
+    const pageNumbers = req.body.pageNumbers === undefined ? true : (String(req.body.pageNumbers).toLowerCase() !== 'false');
+    const headerAlign = ['left', 'center', 'right'].includes(req.body.headerAlign) ? req.body.headerAlign : 'left';
+    const footerAlign = ['left', 'center', 'right'].includes(req.body.footerAlign) ? req.body.footerAlign : 'center';
+    const includeDate = String(req.body.includeDate).toLowerCase() === 'true';
+    
+    // Advanced customization options
+    const outputTheme = req.body.outputTheme || 'default';
+    const fontFamily = req.body.fontFamily || 'system';
+    const codeTheme = req.body.codeTheme || 'github';
+    const pageSize = req.body.pageSize || 'A4';
+    const customCSS = req.body.customCSS || '';
+    
     const jobId = req.body.jobId || null;
     if (jobId) {
       initJob(jobId);
@@ -679,23 +851,37 @@ app.post('/convert', upload.single('markdown'), async (req, res) => {
     updateProgress(jobId, 5, 'Reading file');
     const baseFilename = path.basename(req.file.originalname, '.md');
     
+    // Prepare options object
+    const conversionOptions = {
+      headerText,
+      pageNumbers,
+      headerAlign,
+      footerAlign,
+      includeDate,
+      outputTheme,
+      fontFamily,
+      codeTheme,
+      pageSize,
+      customCSS
+    };
+    
     let result;
     let contentType;
     let fileExtension;
     
     switch (format) {
       case 'html':
-        result = await convertToHTML(markdownContent, baseFilename, jobId);
+        result = await convertToHTML(markdownContent, baseFilename, jobId, conversionOptions);
         contentType = 'text/html';
         fileExtension = 'html';
         break;
       case 'pdf':
-        result = await convertToPDF(markdownContent, baseFilename, jobId, { headerText, pageNumbers, headerAlign, footerAlign, includeDate });
+        result = await convertToPDF(markdownContent, baseFilename, jobId, conversionOptions);
         contentType = 'application/pdf';
         fileExtension = 'pdf';
         break;
       case 'docx':
-        result = await convertToDOCX(markdownContent, baseFilename, jobId, { headerText, pageNumbers, headerAlign, includeDate });
+        result = await convertToDOCX(markdownContent, baseFilename, jobId, conversionOptions);
         contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
         fileExtension = 'docx';
         break;

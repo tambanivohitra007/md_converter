@@ -12,9 +12,28 @@ const progressText = document.getElementById('progressText');
 const progressBadge = document.getElementById('progressBadge');
 const themeToggle = document.getElementById('themeToggle');
 const toastContainer = document.getElementById('toastContainer');
+const toggleAdvancedBtn = document.getElementById('toggleAdvancedSettings');
+const advancedSettings = document.getElementById('advancedSettings');
+const advancedToggleIcon = document.getElementById('advancedToggleIcon');
 
 // Configuration
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
+
+// Toggle Advanced Settings
+if (toggleAdvancedBtn && advancedSettings) {
+  toggleAdvancedBtn.addEventListener('click', () => {
+    const isExpanded = toggleAdvancedBtn.getAttribute('aria-expanded') === 'true';
+    toggleAdvancedBtn.setAttribute('aria-expanded', !isExpanded);
+    
+    if (isExpanded) {
+      advancedSettings.classList.add('hidden');
+      advancedToggleIcon.style.transform = 'rotate(0deg)';
+    } else {
+      advancedSettings.classList.remove('hidden');
+      advancedToggleIcon.style.transform = 'rotate(180deg)';
+    }
+  });
+}
 // Toast Notification System
 const Toast = {
   show(type, title, message, duration = 5000) {
@@ -231,16 +250,34 @@ convertBtn.addEventListener('click', async () => {
     formData.append('markdown', selectedFile);
     formData.append('format', format);
     formData.append('jobId', jobId);
+    
+    // Basic options
     const headerInput = document.getElementById('headerText');
     const pageNumbersInput = document.getElementById('pageNumbers');
-  const headerAlignSelect = document.getElementById('headerAlign');
-  const footerAlignSelect = document.getElementById('footerAlign');
-  const includeDateInput = document.getElementById('includeDate');
+    const headerAlignSelect = document.getElementById('headerAlign');
+    const footerAlignSelect = document.getElementById('footerAlign');
+    const includeDateInput = document.getElementById('includeDate');
+    
     if (headerInput && headerInput.value) formData.append('headerText', headerInput.value);
     if (pageNumbersInput) formData.append('pageNumbers', pageNumbersInput.checked ? 'true' : 'false');
-  if (headerAlignSelect) formData.append('headerAlign', headerAlignSelect.value);
-  if (footerAlignSelect) formData.append('footerAlign', footerAlignSelect.value);
-  if (includeDateInput) formData.append('includeDate', includeDateInput.checked ? 'true' : 'false');
+    if (headerAlignSelect) formData.append('headerAlign', headerAlignSelect.value);
+    if (footerAlignSelect) formData.append('footerAlign', footerAlignSelect.value);
+    if (includeDateInput) formData.append('includeDate', includeDateInput.checked ? 'true' : 'false');
+    
+    // Advanced customization options
+    const outputThemeSelect = document.getElementById('outputTheme');
+    const fontFamilySelect = document.getElementById('fontFamily');
+    const codeThemeSelect = document.getElementById('codeTheme');
+    const pageSizeSelect = document.getElementById('pageSize');
+    const customCSSTextarea = document.getElementById('customCSS');
+    
+    if (outputThemeSelect) formData.append('outputTheme', outputThemeSelect.value);
+    if (fontFamilySelect) formData.append('fontFamily', fontFamilySelect.value);
+    if (codeThemeSelect) formData.append('codeTheme', codeThemeSelect.value);
+    if (pageSizeSelect) formData.append('pageSize', pageSizeSelect.value);
+    if (customCSSTextarea && customCSSTextarea.value.trim()) {
+      formData.append('customCSS', customCSSTextarea.value.trim());
+    }
 
     // Upload with progress using XHR to get progress percentage
     let currentUploadPercent = 0;
