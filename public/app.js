@@ -109,6 +109,10 @@ convertBtn.addEventListener('click', async () => {
     formData.append('markdown', selectedFile);
     formData.append('format', format);
     formData.append('jobId', jobId);
+    const headerInput = document.getElementById('headerText');
+    const pageNumbersInput = document.getElementById('pageNumbers');
+    if (headerInput && headerInput.value) formData.append('headerText', headerInput.value);
+    if (pageNumbersInput) formData.append('pageNumbers', pageNumbersInput.checked ? 'true' : 'false');
 
     // Upload with progress using XHR to get progress percentage
     let currentUploadPercent = 0;

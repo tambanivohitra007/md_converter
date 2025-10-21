@@ -246,6 +246,41 @@ main {
   text-align: center;
 }
 
+.doc-options {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: end;
+  margin: 0 auto 16px;
+  max-width: 700px;
+}
+
+.doc-options .field {
+  text-align: left;
+}
+
+.doc-options label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+
+.doc-options input[type="text"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+}
+
 .convert-btn {
   background: var(--primary-color);
   color: white;

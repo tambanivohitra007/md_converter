@@ -275,7 +275,8 @@ async function convertToHTML(markdownContent, filename, jobId) {
 }
 
 // Convert to PDF
-async function convertToPDF(markdownContent, filename, jobId) {
+async function convertToPDF(markdownContent, filename, jobId, opts = {}) {
+  const { headerText = '', pageNumbers = true } = opts;
   updateProgress(jobId, 1, 'Starting');
   const processedContent = await processMermaidDiagrams(markdownContent, 'pdf', { jobId, start: 5, end: 60 });
   const htmlContent = marked(processedContent);
@@ -337,7 +338,6 @@ async function convertToPDF(markdownContent, filename, jobId) {
       color: #666;
       margin: 20px 0;
     }
-  </style>
 </head>
 <body>
   ${htmlContent}
@@ -354,16 +354,28 @@ async function convertToPDF(markdownContent, filename, jobId) {
     const page = await browser.newPage();
     await page.setContent(fullHTML, { waitUntil: 'networkidle0' });
     updateProgress(jobId, 85, 'Rendering PDF');
+    const headerTemplate = `
+      <div style="font-size:10px; width:100%; padding:0 10mm; display:flex; justify-content:space-between; color:#555;">
+        <span>${headerText ? headerText.replace(/</g, '&lt;').replace(/>/g, '&gt;') : filename}</span>
+        <span></span>
+      </div>`;
+    const footerTemplate = pageNumbers ? `
+      <div style="font-size:10px; width:100%; padding:0 10mm; color:#555; display:flex; justify-content:center;">
+        <span class="pageNumber"></span>&nbsp;/&nbsp;<span class="totalPages"></span>
+      </div>` : '<div></div>';
     
     const pdfBuffer = await page.pdf({
       format: 'A4',
       margin: {
-        top: '20mm',
+        top: headerText ? '25mm' : '20mm',
         right: '20mm',
-        bottom: '20mm',
+        bottom: pageNumbers ? '25mm' : '20mm',
         left: '20mm'
       },
-      printBackground: true
+      printBackground: true,
+      displayHeaderFooter: !!(headerText || pageNumbers),
+      headerTemplate,
+      footerTemplate
     });
     updateProgress(jobId, 95, 'Finalizing');
     
@@ -374,7 +386,8 @@ async function convertToPDF(markdownContent, filename, jobId) {
 }
 
 // Convert to DOCX
-async function convertToDOCX(markdownContent, filename, jobId) {
+async function convertToDOCX(markdownContent, filename, jobId, opts = {}) {
+  const { headerText = '', pageNumbers = true } = opts;
   updateProgress(jobId, 1, 'Starting');
   const processedContent = await processMermaidDiagrams(markdownContent, 'docx', { jobId, start: 5, end: 60 });
   const htmlContent = marked(processedContent);
@@ -423,10 +436,15 @@ async function convertToDOCX(markdownContent, filename, jobId) {
 </html>
   `;
   
-  const docxBuffer = await HTMLtoDOCX(fullHTML, null, {
+  const headerHTML = headerText
+    ? `<div style="font-size:10pt; color:#555;">${headerText.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>`
+    : undefined;
+
+  const docxBuffer = await HTMLtoDOCX(fullHTML, headerHTML, {
     table: { row: { cantSplit: true } },
-    footer: true,
-    pageNumber: true,
+    header: !!headerText,
+    footer: !!pageNumbers,
+    pageNumber: !!pageNumbers,
   });
   updateProgress(jobId, 95, 'Finalizing');
   
@@ -441,6 +459,8 @@ app.post('/convert', upload.single('markdown'), async (req, res) => {
     }
     
     const format = req.body.format;
+    const headerText = (req.body.headerText || '').toString().slice(0, 200);
+    const pageNumbers = req.body.pageNumbers === undefined ? true : (String(req.body.pageNumbers).toLowerCase() !== 'false');
     const jobId = req.body.jobId || null;
     if (jobId) {
       initJob(jobId);
@@ -467,12 +487,12 @@ app.post('/convert', upload.single('markdown'), async (req, res) => {
         fileExtension = 'html';
         break;
       case 'pdf':
-        result = await convertToPDF(markdownContent, baseFilename, jobId);
+        result = await convertToPDF(markdownContent, baseFilename, jobId, { headerText, pageNumbers });
         contentType = 'application/pdf';
         fileExtension = 'pdf';
         break;
       case 'docx':
-        result = await convertToDOCX(markdownContent, baseFilename, jobId);
+        result = await convertToDOCX(markdownContent, baseFilename, jobId, { headerText, pageNumbers });
         contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
         fileExtension = 'docx';
         break;
