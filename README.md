@@ -280,7 +280,3 @@ Contributions are welcome! Feel free to submit issues or pull requests.
 ## 📧 Support
 
 For issues or questions, please open an issue on the repository.
-
----
-
-Built with ❤️ using Node.js, Express, Mermaid.js, and Puppeteer
