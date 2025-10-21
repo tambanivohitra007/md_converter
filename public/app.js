@@ -11,6 +11,72 @@ const progressFill = document.getElementById('progressFill');
 const progressText = document.getElementById('progressText');
 const progressBadge = document.getElementById('progressBadge');
 const themeToggle = document.getElementById('themeToggle');
+const toastContainer = document.getElementById('toastContainer');
+
+// Configuration
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
+// Toast Notification System
+const Toast = {
+  show(type, title, message, duration = 5000) {
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    
+    const icons = {
+      success: '<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>',
+      error: '<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>',
+      warning: '<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>',
+      info: '<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>'
+    };
+    
+    toast.innerHTML = `
+      ${icons[type] || icons.info}
+      <div class="toast-content">
+        <div class="toast-title">${title}</div>
+        ${message ? `<div class="toast-message">${message}</div>` : ''}
+      </div>
+      <button class="toast-close" aria-label="Close notification">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="1" y1="1" x2="11" y2="11"></line>
+          <line x1="11" y1="1" x2="1" y2="11"></line>
+        </svg>
+      </button>
+      ${duration > 0 ? `<div class="toast-progress" style="animation-duration: ${duration}ms"></div>` : ''}
+    `;
+    
+    const closeBtn = toast.querySelector('.toast-close');
+    const remove = () => {
+      toast.classList.add('hiding');
+      setTimeout(() => {
+        if (toast.parentNode) toast.parentNode.removeChild(toast);
+      }, 300);
+    };
+    
+    closeBtn.addEventListener('click', remove);
+    if (duration > 0) {
+      setTimeout(remove, duration);
+    }
+    
+    toastContainer.appendChild(toast);
+    return toast;
+  },
+  
+  success(title, message, duration) {
+    return this.show('success', title, message, duration);
+  },
+  
+  error(title, message, duration) {
+    return this.show('error', title, message, duration);
+  },
+  
+  warning(title, message, duration) {
+    return this.show('warning', title, message, duration);
+  },
+  
+  info(title, message, duration) {
+    return this.show('info', title, message, duration);
+  }
+};
+
 // Theme handling (dark mode)
 (() => {
   const root = document.documentElement;
@@ -55,9 +121,28 @@ function formatBytes(bytes) {
 function handleFileSelect(file) {
   if (!file) return;
   
+  // Validate file type
   if (!file.name.toLowerCase().endsWith('.md')) {
-    alert('Please select a Markdown (.md) file');
+    Toast.error('Invalid File Type', 'Please select a Markdown (.md) file');
     return;
+  }
+  
+  // Validate file size (10MB max)
+  if (file.size > MAX_FILE_SIZE) {
+    Toast.error(
+      'File Too Large', 
+      `Maximum file size is ${formatBytes(MAX_FILE_SIZE)}. Your file is ${formatBytes(file.size)}.`
+    );
+    return;
+  }
+  
+  // Warn if file is large (over 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    Toast.warning(
+      'Large File Detected',
+      'This file is quite large. Conversion may take a while.',
+      7000
+    );
   }
   
   selectedFile = file;
@@ -67,6 +152,8 @@ function handleFileSelect(file) {
   uploadArea.classList.add('hidden');
   fileSelected.classList.remove('hidden');
   convertBtn.disabled = false;
+  
+  Toast.success('File Ready', `${file.name} is ready to convert`);
 }
 
 // Click to upload
@@ -108,6 +195,7 @@ removeBtn.addEventListener('click', () => {
   fileSelected.classList.add('hidden');
   convertBtn.disabled = true;
   progressSection.classList.add('hidden');
+  Toast.info('File Removed', 'You can select another file to convert');
 });
 
 // Convert file
@@ -204,6 +292,8 @@ convertBtn.addEventListener('click', async () => {
     document.body.removeChild(a);
 
     setProgress(100, 'Completed');
+    Toast.success('Conversion Complete!', `Your ${format.toUpperCase()} file has been downloaded successfully`);
+    
     setTimeout(() => {
       progressSection.classList.add('hidden');
       progressFill.style.width = '0%';
@@ -214,6 +304,8 @@ convertBtn.addEventListener('click', async () => {
     setProgress(100, `Error: ${error.message}`);
     progressFill.style.background = 'var(--danger-color)';
     progressFill.style.animation = 'none';
+    
+    Toast.error('Conversion Failed', error.message || 'An error occurred during conversion');
     
     setTimeout(() => {
       progressSection.classList.add('hidden');
