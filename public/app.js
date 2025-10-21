@@ -10,6 +10,21 @@ const progressSection = document.getElementById('progressSection');
 const progressFill = document.getElementById('progressFill');
 const progressText = document.getElementById('progressText');
 const progressBadge = document.getElementById('progressBadge');
+const themeToggle = document.getElementById('themeToggle');
+// Theme handling (dark mode)
+(() => {
+  const root = document.documentElement;
+  const stored = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const initial = stored || (prefersDark ? 'dark' : 'light');
+  if (initial === 'dark') root.classList.add('dark'); else root.classList.remove('dark');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const isDark = root.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+  }
+})();
 
 // Helper to create a jobId
 function createJobId() {
@@ -49,8 +64,8 @@ function handleFileSelect(file) {
   fileName.textContent = file.name;
   fileSize.textContent = formatBytes(file.size);
   
-  uploadArea.style.display = 'none';
-  fileSelected.style.display = 'block';
+  uploadArea.classList.add('hidden');
+  fileSelected.classList.remove('hidden');
   convertBtn.disabled = false;
 }
 
@@ -67,16 +82,19 @@ fileInput.addEventListener('change', (e) => {
 // Drag and drop
 uploadArea.addEventListener('dragover', (e) => {
   e.preventDefault();
-  uploadArea.classList.add('drag-over');
+  uploadArea.classList.add('border-indigo-500');
+  uploadArea.classList.add('dark:border-indigo-400');
 });
 
 uploadArea.addEventListener('dragleave', () => {
-  uploadArea.classList.remove('drag-over');
+  uploadArea.classList.remove('border-indigo-500');
+  uploadArea.classList.remove('dark:border-indigo-400');
 });
 
 uploadArea.addEventListener('drop', (e) => {
   e.preventDefault();
-  uploadArea.classList.remove('drag-over');
+  uploadArea.classList.remove('border-indigo-500');
+  uploadArea.classList.remove('dark:border-indigo-400');
   
   const file = e.dataTransfer.files[0];
   handleFileSelect(file);
@@ -86,10 +104,10 @@ uploadArea.addEventListener('drop', (e) => {
 removeBtn.addEventListener('click', () => {
   selectedFile = null;
   fileInput.value = '';
-  uploadArea.style.display = 'block';
-  fileSelected.style.display = 'none';
+  uploadArea.classList.remove('hidden');
+  fileSelected.classList.add('hidden');
   convertBtn.disabled = true;
-  progressSection.style.display = 'none';
+  progressSection.classList.add('hidden');
 });
 
 // Convert file
@@ -99,7 +117,7 @@ convertBtn.addEventListener('click', async () => {
   const format = document.querySelector('input[name="format"]:checked').value;
   
   // Show progress
-  progressSection.style.display = 'block';
+  progressSection.classList.remove('hidden');
   setProgress(0, `Starting ${format.toUpperCase()} conversion...`);
   convertBtn.disabled = true;
   
@@ -187,9 +205,8 @@ convertBtn.addEventListener('click', async () => {
 
     setProgress(100, 'Completed');
     setTimeout(() => {
-      progressSection.style.display = 'none';
+      progressSection.classList.add('hidden');
       progressFill.style.width = '0%';
-      progressFill.style.animation = 'progress 1.5s ease-in-out infinite';
     }, 1500);
     
   } catch (error) {
@@ -199,10 +216,9 @@ convertBtn.addEventListener('click', async () => {
     progressFill.style.animation = 'none';
     
     setTimeout(() => {
-      progressSection.style.display = 'none';
+      progressSection.classList.add('hidden');
       progressFill.style.width = '0%';
-      progressFill.style.background = 'linear-gradient(90deg, var(--primary-color), var(--secondary-color))';
-      progressFill.style.animation = 'progress 1.5s ease-in-out infinite';
+      progressFill.style.background = '';
     }, 3000);
   } finally {
     convertBtn.disabled = false;

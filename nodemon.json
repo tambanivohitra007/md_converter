@@ -1,0 +1,13 @@
+{
+  "watch": [
+    "server.js",
+    "public/**/*.js",
+    "public/**/*.html"
+  ],
+  "ignore": [
+    "public/tailwind.css",
+    "public/**/*.css",
+    "node_modules"
+  ],
+  "ext": "js,json,html"
+}

@@ -38,7 +38,12 @@ cd md_converter
 npm install
 ```
 
-3. Start the server:
+3. Build CSS (first time only):
+```powershell
+npm run build:css
+```
+
+4. Start the server:
 ```bash
 npm start
 ```
@@ -50,11 +55,19 @@ http://localhost:3000
 
 ### For Development
 
-If you want to run with auto-reload during development:
+If you want to run with auto-reload during development (server + Tailwind CSS watcher):
 
 ```bash
 npm run dev
 ```
+
+This runs two processes:
+- Tailwind CSS watcher that builds `public/tailwind.css` from `src/styles.css`
+- Nodemon to restart the server on changes to `server.js`, `public/**/*.html`, `public/**/*.js`
+
+Notes:
+- The app now uses a locally built Tailwind stylesheet (`public/tailwind.css`) instead of the CDN in `public/index.html`.
+- If styles ever look stale, rebuild once with `npm run build:css`.
 
 ## 📖 Usage
 

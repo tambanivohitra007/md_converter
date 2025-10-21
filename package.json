@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "build:css": "tailwindcss -c tailwind.config.js -i ./src/styles.css -o ./public/tailwind.css --minify",
+    "watch:css": "tailwindcss -c tailwind.config.js -i ./src/styles.css -o ./public/tailwind.css --watch",
+    "dev": "concurrently \"npm:watch:css\" \"nodemon server.js\""
   },
   "keywords": [
     "markdown",
@@ -18,17 +20,21 @@
   "author": "Rindra Razafinjatovo",
   "license": "MIT",
   "dependencies": {
-    "express": "^5.1.0",
-    "multer": "^2.0.2",
-    "marked": "^16.4.1",
-    "puppeteer": "^24.25.0",
-    "mermaid": "^11.12.0",
     "docx": "^9.5.1",
-    "jsdom": "^25.0.0",
+    "express": "^5.1.0",
     "html-to-docx": "^1.8.0",
-    "node-html-parser": "^7.0.1"
+    "jsdom": "^25.0.0",
+    "marked": "^16.4.1",
+    "mermaid": "^11.12.0",
+    "multer": "^2.0.2",
+    "node-html-parser": "^7.0.1",
+    "puppeteer": "^24.25.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "autoprefixer": "^10.4.21",
+    "concurrently": "^9.2.1",
+    "nodemon": "^3.1.10",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.18"
   }
 }
