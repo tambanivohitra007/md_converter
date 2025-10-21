@@ -196,12 +196,40 @@ async function processMermaidDiagrams(markdownContent, format, opts = {}) {
   }
 }
 
-// Convert to HTML
+// Convert to HTML with sidebar navigation
 async function convertToHTML(markdownContent, filename, jobId) {
   updateProgress(jobId, 1, 'Starting');
-  const processedContent = await processMermaidDiagrams(markdownContent, 'html', { jobId, start: 5, end: 40 });
+  // Pre-render Mermaid diagrams to images (like PDF/DOCX)
+  const processedContent = await processMermaidDiagrams(markdownContent, 'pdf', { jobId, start: 5, end: 50 });
+  updateProgress(jobId, 60, 'Parsing markdown');
   const htmlContent = marked(processedContent);
-  updateProgress(jobId, 80, 'Generating HTML');
+  updateProgress(jobId, 70, 'Building navigation');
+  
+  // Parse headings and build sidebar navigation
+  const dom = new JSDOM(htmlContent);
+  const document = dom.window.document;
+  const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+  const navItems = [];
+  
+  headings.forEach((heading, index) => {
+    const level = parseInt(heading.tagName.substring(1));
+    const text = heading.textContent.trim();
+    const id = `heading-${index}`;
+    heading.setAttribute('id', id);
+    navItems.push({ level, text, id });
+  });
+  
+  const finalHTML = dom.serialize();
+  
+  // Build nested navigation HTML
+  let navHTML = '<ul class="nav-list">';
+  navItems.forEach(item => {
+    const indent = (item.level - 1) * 16;
+    navHTML += `<li class="nav-item nav-level-${item.level}" style="padding-left: ${indent}px;"><a href="#${item.id}">${item.text}</a></li>`;
+  });
+  navHTML += '</ul>';
+  
+  updateProgress(jobId, 85, 'Generating HTML');
   
   const fullHTML = `
 <!DOCTYPE html>
@@ -210,30 +238,124 @@ async function convertToHTML(markdownContent, filename, jobId) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${filename}</title>
-  <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad: true, theme: 'default' });
-  </script>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    :root {
+      --sidebar-width: 280px;
+      --primary-color: #4f46e5;
+      --border-color: #e5e7eb;
+      --bg-sidebar: #f9fafb;
+      --text-primary: #1f2937;
+      --text-secondary: #6b7280;
+    }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      line-height: 1.6;
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 20px;
-      color: #333;
+      line-height: 1.7;
+      color: var(--text-primary);
+      display: flex;
+      min-height: 100vh;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: var(--sidebar-width);
+      height: 100vh;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      overflow-y: auto;
+      padding: 24px 16px;
+      z-index: 100;
+      transition: transform 0.3s ease;
+    }
+    .sidebar-header {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: var(--text-primary);
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border-color);
+    }
+    .nav-list {
+      list-style: none;
+    }
+    .nav-item {
+      margin: 4px 0;
+    }
+    .nav-item a {
+      display: block;
+      padding: 6px 12px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .nav-item a:hover {
+      background: white;
+      color: var(--primary-color);
+    }
+    .nav-level-1 a {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .nav-level-2 a {
+      font-weight: 500;
+    }
+    .main-content {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 40px 60px;
+      max-width: 1200px;
+    }
+    .mobile-toggle {
+      display: none;
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 200;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.5em;
+      margin-bottom: 0.6em;
+      font-weight: 600;
+      line-height: 1.3;
+      scroll-margin-top: 20px;
+    }
+    h1 { font-size: 2.25rem; color: var(--text-primary); border-bottom: 2px solid var(--border-color); padding-bottom: 12px; }
+    h2 { font-size: 1.75rem; color: var(--text-primary); }
+    h3 { font-size: 1.4rem; }
+    h4 { font-size: 1.15rem; }
+    h5 { font-size: 1rem; }
+    h6 { font-size: 0.95rem; color: var(--text-secondary); }
+    p {
+      margin: 1em 0;
     }
     code {
       background-color: #f4f4f4;
       padding: 2px 6px;
-      border-radius: 3px;
-      font-family: 'Courier New', monospace;
+      border-radius: 4px;
+      font-family: 'Courier New', Consolas, monospace;
+      font-size: 0.9em;
     }
     pre {
       background-color: #f4f4f4;
-      padding: 15px;
-      border-radius: 5px;
+      padding: 16px;
+      border-radius: 8px;
       overflow-x: auto;
+      margin: 1.5em 0;
+      border-left: 4px solid var(--primary-color);
     }
     pre code {
       background-color: transparent;
@@ -242,30 +364,93 @@ async function convertToHTML(markdownContent, filename, jobId) {
     img {
       max-width: 100%;
       height: auto;
+      border-radius: 8px;
+      margin: 1.5em 0;
     }
     table {
       border-collapse: collapse;
       width: 100%;
-      margin: 20px 0;
+      margin: 1.5em 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     table th, table td {
-      border: 1px solid #ddd;
-      padding: 12px;
+      border: 1px solid var(--border-color);
+      padding: 12px 16px;
       text-align: left;
     }
     table th {
-      background-color: #f4f4f4;
+      background-color: var(--bg-sidebar);
+      font-weight: 600;
+    }
+    table tr:hover {
+      background-color: #fafafa;
     }
     blockquote {
-      border-left: 4px solid #ddd;
+      border-left: 4px solid var(--primary-color);
       padding-left: 20px;
-      color: #666;
-      margin: 20px 0;
+      color: var(--text-secondary);
+      margin: 1.5em 0;
+      font-style: italic;
+    }
+    a {
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    ul, ol {
+      margin: 1em 0;
+      padding-left: 2em;
+    }
+    li {
+      margin: 0.5em 0;
+    }
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-left: 0;
+        padding: 80px 20px 40px;
+      }
+      .mobile-toggle {
+        display: block;
+      }
     }
   </style>
 </head>
 <body>
-  ${htmlContent}
+  <button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')" aria-label="Toggle navigation">☰</button>
+  <aside class="sidebar">
+    <div class="sidebar-header">Contents</div>
+    ${navHTML}
+  </aside>
+  <main class="main-content">
+    ${finalHTML}
+  </main>
+  <script>
+    // Smooth scroll and close mobile menu on link click
+    document.querySelectorAll('.nav-item a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        document.querySelector('.sidebar').classList.remove('active');
+      });
+    });
+    // Highlight active section
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          document.querySelectorAll('.nav-item a').forEach(a => a.style.fontWeight = '');
+          const activeLink = document.querySelector('.nav-item a[href="#' + entry.target.id + '"]');
+          if (activeLink) activeLink.style.fontWeight = 'bold';
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(h => observer.observe(h));
+  </script>
 </body>
 </html>
   `;
