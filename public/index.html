@@ -12,8 +12,8 @@
 
 <body
   class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
-  <div class="max-w-6xl mx-auto px-6 py-12">
-    <header class="mb-16 text-center relative">
+  <div class="max-w-6xl mx-auto px-6 py-6">
+    <header class="mb-8 text-center relative">
       <div class="absolute top-4 right-4">
         <button id="themeToggle"
           class="inline-flex items-center gap-2 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-2 text-sm font-medium shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
@@ -25,8 +25,8 @@
         </button>
       </div>
       <div
-        class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 dark:from-blue-500 dark:to-indigo-600 shadow-xl mb-6">
-        <svg class="h-10 w-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 dark:from-blue-500 dark:to-indigo-600 shadow-xl mb-4">
+        <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
           <polyline points="14 2 14 8 20 8" />
           <line x1="16" y1="13" x2="8" y2="13" />
@@ -34,31 +34,31 @@
           <polyline points="10 9 9 9 8 9" />
         </svg>
       </div>
-      <h1 class="text-5xl font-bold text-gray-900 dark:text-white mb-4">
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
         Markdown Converter
       </h1>
-      <p class="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
+      <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
         Transform your Markdown files into beautiful PDFs, HTML pages, or Word documents with advanced Mermaid diagram
         support
       </p>
     </header>
 
-    <main class="space-y-12">
+    <main class="space-y-6">
       <!-- Upload Area -->
       <section>
         <div id="uploadArea"
-          class="relative group border-2 border-dashed rounded-2xl p-16 text-center cursor-pointer border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-300 bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-gray-700 hover:shadow-xl hover:scale-[1.02]">
+          class="relative group border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-300 bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-gray-700 hover:shadow-xl hover:scale-[1.02]">
           <div class="relative z-10">
             <div
-              class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-indigo-700 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
-              <svg class="h-10 w-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-indigo-700 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
+              <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                 <polyline points="17 8 12 3 7 8" />
                 <line x1="12" y1="3" x2="12" y2="15" />
               </svg>
             </div>
-            <h2 class="text-2xl font-semibold mb-3 text-gray-800 dark:text-gray-200">Drop your Markdown file here</h2>
-            <p class="text-gray-600 dark:text-gray-400 mb-4">or click to browse files</p>
+            <h2 class="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-200">Drop your Markdown file here</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-3">or click to browse files</p>
             <div class="inline-flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 font-medium">
               <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -70,24 +70,24 @@
           <input type="file" id="fileInput" accept=".md" hidden>
         </div>
 
-        <div id="fileSelected" class="mt-6 hidden">
+        <div id="fileSelected" class="mt-4 hidden">
           <div
-            class="flex items-center gap-6 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+            class="flex items-center gap-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-lg hover:shadow-xl transition-all duration-300">
             <div
-              class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 dark:from-green-600 dark:to-emerald-700 shadow-md">
-              <svg class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none"
+              class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 dark:from-green-600 dark:to-emerald-700 shadow-md">
+              <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2">
                 <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
                 <polyline points="13 2 13 9 20 9" />
               </svg>
             </div>
             <div class="min-w-0 flex-1">
-              <h3 id="fileName" class="truncate text-lg font-semibold text-gray-800 dark:text-gray-200">filename.md
+              <h3 id="fileName" class="truncate text-base font-semibold text-gray-800 dark:text-gray-200">filename.md
               </h3>
-              <p id="fileSize" class="text-sm text-gray-600 dark:text-gray-400">0 KB</p>
+              <p id="fileSize" class="text-xs text-gray-600 dark:text-gray-400">0 KB</p>
             </div>
             <button id="removeBtn"
-              class="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-gray-200 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-300 dark:hover:border-red-700 transition-all duration-300 group"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-gray-200 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-300 dark:hover:border-red-700 transition-all duration-300 group"
               title="Remove file">
               <svg class="h-5 w-5 text-gray-500 dark:text-gray-400 group-hover:text-red-500 transition-colors"
                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -101,13 +101,13 @@
 
       <!-- Format Selection -->
       <section>
-        <h2 class="mb-8 text-2xl font-semibold text-center text-gray-800 dark:text-gray-200">Choose Your Output Format
+        <h2 class="mb-4 text-xl font-semibold text-center text-gray-800 dark:text-gray-200">Choose Your Output Format
         </h2>
-        <div class="grid gap-6 sm:grid-cols-3">
+        <div class="grid gap-4 sm:grid-cols-3">
           <label class="group block cursor-pointer">
             <input type="radio" name="format" value="pdf" class="peer hidden" checked />
             <div
-              class="relative rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-8 transition-all duration-300 peer-checked:border-blue-500 dark:peer-checked:border-blue-400 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/30 hover:shadow-xl hover:scale-105 peer-checked:shadow-xl peer-checked:shadow-blue-500/10">
+              class="relative rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5 transition-all duration-300 peer-checked:border-blue-500 dark:peer-checked:border-blue-400 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/30 hover:shadow-xl hover:scale-105 peer-checked:shadow-xl peer-checked:shadow-blue-500/10">
               <div class="absolute top-4 right-4 opacity-0 peer-checked:opacity-100 transition-opacity duration-300">
                 <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
                   <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -118,15 +118,15 @@
                 </div>
               </div>
               <div
-                class="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 dark:from-red-600 dark:to-pink-700 shadow-lg">
-                <svg class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none"
+                class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 dark:from-red-600 dark:to-pink-700 shadow-lg">
+                <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" stroke-width="2">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                   <polyline points="14 2 14 8 20 8"></polyline>
                 </svg>
               </div>
-              <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">PDF</h3>
-              <p class="text-gray-600 dark:text-gray-400 mb-4">Perfect for printing and professional documents</p>
+              <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-3">PDF</h3>
+              <p class="text-gray-600 dark:text-gray-400 mb-2\">Perfect for printing and professional documents</p>
               <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-500">
                 <div class="w-2 h-2 bg-green-500 rounded-full"></div>
                 <span>High quality • Print ready</span>
@@ -136,7 +136,7 @@
           <label class="group block cursor-pointer">
             <input type="radio" name="format" value="html" class="peer hidden" />
             <div
-              class="relative rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-8 transition-all duration-300 peer-checked:border-blue-500 dark:peer-checked:border-blue-400 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/30 hover:shadow-xl hover:scale-105 peer-checked:shadow-xl peer-checked:shadow-blue-500/10">
+              class="relative rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5 transition-all duration-300 peer-checked:border-blue-500 dark:peer-checked:border-blue-400 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/30 hover:shadow-xl hover:scale-105 peer-checked:shadow-xl peer-checked:shadow-blue-500/10">
               <div class="absolute top-4 right-4 opacity-0 peer-checked:opacity-100 transition-opacity duration-300">
                 <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
                   <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -147,14 +147,14 @@
                 </div>
               </div>
               <div
-                class="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 dark:from-orange-600 dark:to-amber-700 shadow-lg">
-                <svg class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none"
+                class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 dark:from-orange-600 dark:to-amber-700 shadow-lg">
+                <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" stroke-width="2">
                   <polyline points="16 18 22 12 16 6"></polyline>
                   <polyline points="8 6 2 12 8 18"></polyline>
                 </svg>
               </div>
-              <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">HTML</h3>
+              <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-3">HTML</h3>
               <p class="text-gray-600 dark:text-gray-400 mb-4">Interactive web pages with full styling</p>
               <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-500">
                 <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
@@ -165,7 +165,7 @@
           <label class="group block cursor-pointer">
             <input type="radio" name="format" value="docx" class="peer hidden" />
             <div
-              class="relative rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-8 transition-all duration-300 peer-checked:border-blue-500 dark:peer-checked:border-blue-400 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/30 hover:shadow-xl hover:scale-105 peer-checked:shadow-xl peer-checked:shadow-blue-500/10">
+              class="relative rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5 transition-all duration-300 peer-checked:border-blue-500 dark:peer-checked:border-blue-400 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/30 hover:shadow-xl hover:scale-105 peer-checked:shadow-xl peer-checked:shadow-blue-500/10">
               <div class="absolute top-4 right-4 opacity-0 peer-checked:opacity-100 transition-opacity duration-300">
                 <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
                   <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -176,14 +176,14 @@
                 </div>
               </div>
               <div
-                class="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 shadow-lg">
-                <svg class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none"
+                class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 shadow-lg">
+                <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" stroke-width="2">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                   <polyline points="14 2 14 8 20 8"></polyline>
                 </svg>
               </div>
-              <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">DOCX</h3>
+              <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-3">DOCX</h3>
               <p class="text-gray-600 dark:text-gray-400 mb-4">Editable Microsoft Word documents</p>
               <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-500">
                 <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
@@ -196,25 +196,25 @@
 
       <!-- Document Options and Action -->
       <section
-        class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-200 dark:border-gray-700">
-        <div class="flex items-center gap-3 mb-6">
+        class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-xl border border-gray-200 dark:border-gray-700">
+        <div class="flex items-center gap-3 mb-4">
               <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-500 dark:to-indigo-600 flex items-center justify-center">
             <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 20h9"></path>
               <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
             </svg>
           </div>
-          <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Document Settings</h3>
+          <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Document Settings</h3>
         </div>
-        <div class="grid gap-6 sm:grid-cols-5 mb-8">
+        <div class="grid gap-4 sm:grid-cols-5 mb-4">
           <div class="sm:col-span-2">
-            <label for="headerText" class="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300">Header
+            <label for="headerText" class="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">Header
               Text</label>
             <input id="headerText" type="text" maxlength="200" placeholder="Enter header text for pages"
               class="w-full rounded-xl border border-gray-300 dark:border-gray-600/50 bg-white dark:bg-gray-700/80 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-gray-100" />
           </div>
           <div>
-            <label for="headerAlign" class="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300">Header
+            <label for="headerAlign" class="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">Header
               Alignment</label>
             <select id="headerAlign"
               class="w-full rounded-xl border border-gray-300 dark:border-gray-600/50 bg-white dark:bg-gray-700/80 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-gray-100">
@@ -233,7 +233,7 @@
             </label>
           </div>
           <div>
-            <label for="footerAlign" class="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300">Footer
+            <label for="footerAlign" class="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">Footer
               Alignment</label>
             <select id="footerAlign"
               class="w-full rounded-xl border border-gray-300 dark:border-gray-600/50 bg-white dark:bg-gray-700/80 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-gray-100">
@@ -258,7 +258,7 @@
             </div>
           </div>
           <button id="convertBtn" disabled
-            class="inline-flex items-center gap-3 rounded-xl bg-blue-600 dark:bg-blue-500 px-8 py-4 text-lg font-bold text-white disabled:cursor-not-allowed disabled:opacity-50 hover:bg-blue-700 dark:hover:bg-blue-600 disabled:hover:bg-blue-600 disabled:dark:hover:bg-blue-500 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 disabled:hover:scale-100">
+            class="inline-flex items-center gap-3 rounded-xl bg-blue-600 dark:bg-blue-500 px-6 py-3 text-base font-bold text-white disabled:cursor-not-allowed disabled:opacity-50 hover:bg-blue-700 dark:hover:bg-blue-600 disabled:hover:bg-blue-600 disabled:dark:hover:bg-blue-500 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 disabled:hover:scale-100">
             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
@@ -294,18 +294,18 @@
       </section>
 
       <!-- Features -->
-      <section class="pt-8">
-        <div class="text-center mb-12">
-          <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-4">Powerful Features</h2>
-          <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Everything you need to convert your Markdown
+      <section class="pt-4 hidden sm:block">
+        <div class="text-center mb-6">
+          <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">Powerful Features</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Everything you need to convert your Markdown
             files with professional quality and advanced features</p>
         </div>
-        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div
             class="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 hover:shadow-2xl transition-all duration-300 hover:scale-105">
             <div
               class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 dark:from-emerald-600 dark:to-teal-700 shadow-lg group-hover:shadow-xl transition-all duration-300">
-              <svg class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none"
+              <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2">
                 <path
                   d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
@@ -326,7 +326,7 @@
             class="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 hover:shadow-2xl transition-all duration-300 hover:scale-105">
             <div
               class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 shadow-lg group-hover:shadow-xl transition-all duration-300">
-              <svg class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none"
+              <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2">
                 <path d="M12 19l7-7 3 3-7 7-3-3z" />
                 <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
@@ -346,7 +346,7 @@
             class="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 hover:shadow-2xl transition-all duration-300 hover:scale-105">
             <div
               class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 dark:from-purple-600 dark:to-pink-700 shadow-lg group-hover:shadow-xl transition-all duration-300">
-              <svg class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none"
+              <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                 <polyline points="14 2 14 8 20 8" />
@@ -367,7 +367,7 @@
             class="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 hover:shadow-2xl transition-all duration-300 hover:scale-105">
             <div
               class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 dark:from-amber-600 dark:to-orange-700 shadow-lg group-hover:shadow-xl transition-all duration-300">
-              <svg class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none"
+              <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2">
                 <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
               </svg>
@@ -384,7 +384,7 @@
       </section>
     </main>
 
-    <footer class="mt-20 pt-12 text-center">
+    <footer class="mt-6 pt-4 text-center text-sm">
       <div class="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400">
         <span>Powered by</span>
         <a class="inline-flex items-center gap-2 font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-300"
