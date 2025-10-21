@@ -276,7 +276,13 @@ async function convertToHTML(markdownContent, filename, jobId) {
 
 // Convert to PDF
 async function convertToPDF(markdownContent, filename, jobId, opts = {}) {
-  const { headerText = '', pageNumbers = true } = opts;
+  const {
+    headerText = '',
+    pageNumbers = true,
+    headerAlign = 'left', // left|center|right
+    footerAlign = 'center', // left|center|right
+    includeDate = false,
+  } = opts;
   updateProgress(jobId, 1, 'Starting');
   const processedContent = await processMermaidDiagrams(markdownContent, 'pdf', { jobId, start: 5, end: 60 });
   const htmlContent = marked(processedContent);
@@ -354,13 +360,16 @@ async function convertToPDF(markdownContent, filename, jobId, opts = {}) {
     const page = await browser.newPage();
     await page.setContent(fullHTML, { waitUntil: 'networkidle0' });
     updateProgress(jobId, 85, 'Rendering PDF');
+    const justifyMap = { left: 'flex-start', center: 'center', right: 'flex-end' };
+    const headerStr = headerText ? headerText.replace(/</g, '&lt;').replace(/>/g, '&gt;') : filename;
+    const dateStr = includeDate ? new Date().toLocaleDateString() : '';
     const headerTemplate = `
-      <div style="font-size:10px; width:100%; padding:0 10mm; display:flex; justify-content:space-between; color:#555;">
-        <span>${headerText ? headerText.replace(/</g, '&lt;').replace(/>/g, '&gt;') : filename}</span>
-        <span></span>
+      <div style="font-size:10px; width:100%; padding:0 10mm; display:flex; justify-content:${justifyMap[headerAlign] || 'flex-start'}; color:#555; gap:8px;">
+        <span>${headerStr}</span>
+        ${includeDate ? `<span style=\"opacity:.85\">${dateStr}</span>` : ''}
       </div>`;
     const footerTemplate = pageNumbers ? `
-      <div style="font-size:10px; width:100%; padding:0 10mm; color:#555; display:flex; justify-content:center;">
+      <div style="font-size:10px; width:100%; padding:0 10mm; color:#555; display:flex; justify-content:${justifyMap[footerAlign] || 'center'};">
         <span class="pageNumber"></span>&nbsp;/&nbsp;<span class="totalPages"></span>
       </div>` : '<div></div>';
     
@@ -387,7 +396,12 @@ async function convertToPDF(markdownContent, filename, jobId, opts = {}) {
 
 // Convert to DOCX
 async function convertToDOCX(markdownContent, filename, jobId, opts = {}) {
-  const { headerText = '', pageNumbers = true } = opts;
+  const {
+    headerText = '',
+    pageNumbers = true,
+    headerAlign = 'left',
+    includeDate = false,
+  } = opts;
   updateProgress(jobId, 1, 'Starting');
   const processedContent = await processMermaidDiagrams(markdownContent, 'docx', { jobId, start: 5, end: 60 });
   const htmlContent = marked(processedContent);
@@ -436,13 +450,13 @@ async function convertToDOCX(markdownContent, filename, jobId, opts = {}) {
 </html>
   `;
   
-  const headerHTML = headerText
-    ? `<div style="font-size:10pt; color:#555;">${headerText.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>`
-    : undefined;
+  const textAlign = headerAlign === 'center' ? 'center' : (headerAlign === 'right' ? 'right' : 'left');
+  const headerSafeText = headerText ? headerText.replace(/</g, '&lt;').replace(/>/g, '&gt;') : filename;
+  const headerHTML = `<div style="font-size:10pt; color:#555; text-align:${textAlign};">${headerSafeText}${includeDate ? ` &nbsp; <span style=\"opacity:.85\">${new Date().toLocaleDateString()}</span>` : ''}</div>`;
 
   const docxBuffer = await HTMLtoDOCX(fullHTML, headerHTML, {
     table: { row: { cantSplit: true } },
-    header: !!headerText,
+    header: true,
     footer: !!pageNumbers,
     pageNumber: !!pageNumbers,
   });
@@ -459,8 +473,11 @@ app.post('/convert', upload.single('markdown'), async (req, res) => {
     }
     
     const format = req.body.format;
-    const headerText = (req.body.headerText || '').toString().slice(0, 200);
-    const pageNumbers = req.body.pageNumbers === undefined ? true : (String(req.body.pageNumbers).toLowerCase() !== 'false');
+  const headerText = (req.body.headerText || '').toString().slice(0, 200);
+  const pageNumbers = req.body.pageNumbers === undefined ? true : (String(req.body.pageNumbers).toLowerCase() !== 'false');
+  const headerAlign = ['left', 'center', 'right'].includes(req.body.headerAlign) ? req.body.headerAlign : 'left';
+  const footerAlign = ['left', 'center', 'right'].includes(req.body.footerAlign) ? req.body.footerAlign : 'center';
+  const includeDate = String(req.body.includeDate).toLowerCase() === 'true';
     const jobId = req.body.jobId || null;
     if (jobId) {
       initJob(jobId);
@@ -487,12 +504,12 @@ app.post('/convert', upload.single('markdown'), async (req, res) => {
         fileExtension = 'html';
         break;
       case 'pdf':
-        result = await convertToPDF(markdownContent, baseFilename, jobId, { headerText, pageNumbers });
+        result = await convertToPDF(markdownContent, baseFilename, jobId, { headerText, pageNumbers, headerAlign, footerAlign, includeDate });
         contentType = 'application/pdf';
         fileExtension = 'pdf';
         break;
       case 'docx':
-        result = await convertToDOCX(markdownContent, baseFilename, jobId, { headerText, pageNumbers });
+        result = await convertToDOCX(markdownContent, baseFilename, jobId, { headerText, pageNumbers, headerAlign, includeDate });
         contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
         fileExtension = 'docx';
         break;

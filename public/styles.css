@@ -248,11 +248,11 @@ main {
 
 .doc-options {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 16px;
+  grid-template-columns: 1.2fr 0.8fr auto auto 0.8fr;
+  gap: 12px;
   align-items: end;
   margin: 0 auto 16px;
-  max-width: 700px;
+  max-width: 900px;
 }
 
 .doc-options .field {
@@ -272,6 +272,15 @@ main {
   border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 0.95rem;
+}
+
+.doc-options select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: var(--bg-primary);
 }
 
 .checkbox {
@@ -451,6 +460,10 @@ footer {
   }
 
   .format-options {
+    grid-template-columns: 1fr;
+  }
+
+  .doc-options {
     grid-template-columns: 1fr;
   }
 

@@ -100,10 +100,30 @@
             <label for="headerText">Header (optional)</label>
             <input id="headerText" type="text" placeholder="Enter header text for pages" maxlength="200" />
           </div>
+          <div class="field">
+            <label for="headerAlign">Header alignment</label>
+            <select id="headerAlign">
+              <option value="left" selected>Left</option>
+              <option value="center">Center</option>
+              <option value="right">Right</option>
+            </select>
+          </div>
           <label class="checkbox">
             <input id="pageNumbers" type="checkbox" checked />
             <span>Show page numbers</span>
           </label>
+          <label class="checkbox">
+            <input id="includeDate" type="checkbox" />
+            <span>Include date in header</span>
+          </label>
+          <div class="field">
+            <label for="footerAlign">Footer alignment</label>
+            <select id="footerAlign">
+              <option value="left">Left</option>
+              <option value="center" selected>Center</option>
+              <option value="right">Right</option>
+            </select>
+          </div>
         </div>
         <button class="convert-btn" id="convertBtn" disabled>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

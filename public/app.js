@@ -111,8 +111,14 @@ convertBtn.addEventListener('click', async () => {
     formData.append('jobId', jobId);
     const headerInput = document.getElementById('headerText');
     const pageNumbersInput = document.getElementById('pageNumbers');
+  const headerAlignSelect = document.getElementById('headerAlign');
+  const footerAlignSelect = document.getElementById('footerAlign');
+  const includeDateInput = document.getElementById('includeDate');
     if (headerInput && headerInput.value) formData.append('headerText', headerInput.value);
     if (pageNumbersInput) formData.append('pageNumbers', pageNumbersInput.checked ? 'true' : 'false');
+  if (headerAlignSelect) formData.append('headerAlign', headerAlignSelect.value);
+  if (footerAlignSelect) formData.append('footerAlign', footerAlignSelect.value);
+  if (includeDateInput) formData.append('includeDate', includeDateInput.checked ? 'true' : 'false');
 
     // Upload with progress using XHR to get progress percentage
     let currentUploadPercent = 0;
