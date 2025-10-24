@@ -19,6 +19,25 @@ const advancedToggleIcon = document.getElementById('advancedToggleIcon');
 // Configuration
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
 
+// Resolve backend endpoint (Vercel serverless vs local Express)
+let CONVERT_ENDPOINT = null;
+async function resolveConvertEndpoint() {
+  if (CONVERT_ENDPOINT) return CONVERT_ENDPOINT;
+  try {
+    // If Vercel serverless is present, /api/health will exist
+    const res = await fetch('/api/health', { method: 'GET', cache: 'no-store' });
+    if (res.ok) {
+      CONVERT_ENDPOINT = '/api/convert';
+      return CONVERT_ENDPOINT;
+    }
+    throw new Error('No /api/health');
+  } catch (_) {
+    // Fallback to local Express route
+    CONVERT_ENDPOINT = '/convert';
+    return CONVERT_ENDPOINT;
+  }
+}
+
 // Toggle Advanced Settings
 if (toggleAdvancedBtn && advancedSettings) {
   toggleAdvancedBtn.addEventListener('click', () => {
@@ -281,8 +300,9 @@ convertBtn.addEventListener('click', async () => {
 
     // Upload with progress using XHR to get progress percentage
     let currentUploadPercent = 0;
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/convert');
+  const xhr = new XMLHttpRequest();
+  const convertEndpoint = await resolveConvertEndpoint();
+  xhr.open('POST', convertEndpoint);
     xhr.responseType = 'blob';
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable) {
@@ -293,20 +313,32 @@ convertBtn.addEventListener('click', async () => {
     };
 
     // Server progress via SSE (conversion phase ~ 20% -> 100%)
-    const sse = new EventSource(`/progress/${jobId}`);
+    // Progress during processing
     let serverProgress = 0;
-    sse.onmessage = (ev) => {
-      try {
-        const data = JSON.parse(ev.data);
-        serverProgress = Number(data.progress) || 0;
-        // Combine: upload (0-20), server (20-100)
+    let simulated = null;
+    if (convertEndpoint === '/convert') {
+      // Local Express supports SSE progress
+      const sse = new EventSource(`/progress/${jobId}`);
+      sse.onmessage = (ev) => {
+        try {
+          const data = JSON.parse(ev.data);
+          serverProgress = Number(data.progress) || 0;
+          const combined = Math.max(currentUploadPercent * 0.2, 0) + (serverProgress * 0.8);
+          setProgress(combined, data.message || 'Processing');
+        } catch {}
+      };
+      sse.onerror = () => { /* auto-reconnect by EventSource */ };
+      // Ensure we close on finish below
+      xhr.addEventListener('loadend', () => { try { sse.close(); } catch {} });
+    } else {
+      // Vercel (serverless) has no SSE; simulate a smooth progress
+      simulated = setInterval(() => {
+        serverProgress = Math.min(serverProgress + 5, 100);
         const combined = Math.max(currentUploadPercent * 0.2, 0) + (serverProgress * 0.8);
-        setProgress(combined, data.message || 'Processing');
-      } catch {}
-    };
-    sse.onerror = () => {
-      // Ignore transient SSE drops; EventSource auto-reconnects
-    };
+        setProgress(combined, serverProgress < 100 ? 'Processing…' : 'Finalizing…');
+        if (serverProgress >= 100) clearInterval(simulated);
+      }, 700);
+    }
 
     const responsePromise = new Promise((resolve, reject) => {
       xhr.onload = () => {
@@ -323,7 +355,7 @@ convertBtn.addEventListener('click', async () => {
 
     const xhrRes = await responsePromise;
     // Close SSE (server will also close on completion)
-    try { sse.close(); } catch {}
+  try { if (simulated) clearInterval(simulated); } catch {}
 
     // Determine filename
     let downloadFilename = `converted.${format}`;
