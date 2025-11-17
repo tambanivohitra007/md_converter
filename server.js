@@ -344,6 +344,33 @@ function getThemeCSS(themeName = 'default', fontFamily = 'system', codeTheme = '
 
 // Convert to HTML with sidebar navigation
 async function convertToHTML(markdownContent, filename, jobId, options = {}) {
+  const {
+    outputTheme = 'default',
+    fontFamily = 'system',
+    codeTheme = 'github',
+    customCSS = '',
+    headerFontSize = 'medium',
+    contentFontSize = 'medium'
+  } = options;
+  
+  // Font size mappings
+  const headerSizes = {
+    small: { h1: '1.75rem', h2: '1.4rem', h3: '1.15rem', h4: '1rem', h5: '0.9rem', h6: '0.85rem' },
+    medium: { h1: '2.25rem', h2: '1.75rem', h3: '1.4rem', h4: '1.15rem', h5: '1rem', h6: '0.95rem' },
+    large: { h1: '2.75rem', h2: '2.1rem', h3: '1.7rem', h4: '1.4rem', h5: '1.15rem', h6: '1.05rem' },
+    xlarge: { h1: '3.25rem', h2: '2.5rem', h3: '2rem', h4: '1.6rem', h5: '1.3rem', h6: '1.15rem' }
+  };
+  
+  const contentSizes = {
+    small: '12px',
+    medium: '14px',
+    large: '16px',
+    xlarge: '18px'
+  };
+  
+  const selectedHeaderSizes = headerSizes[headerFontSize] || headerSizes.medium;
+  const selectedContentSize = contentSizes[contentFontSize] || contentSizes.medium;
+  
   updateProgress(jobId, 1, 'Starting');
   // Pre-render Mermaid diagrams to images (like PDF/DOCX)
   const processedContent = await processMermaidDiagrams(markdownContent, 'pdf', { jobId, start: 5, end: 50 });
@@ -405,6 +432,7 @@ async function convertToHTML(markdownContent, filename, jobId, options = {}) {
       line-height: 1.7;
       display: flex;
       min-height: 100vh;
+      font-size: ${selectedContentSize};
     }
     .sidebar {
       position: fixed;
@@ -480,12 +508,17 @@ async function convertToHTML(markdownContent, filename, jobId, options = {}) {
       line-height: 1.3;
       scroll-margin-top: 20px;
     }
-    h1 { font-size: 2.25rem; color: var(--text-primary); border-bottom: 2px solid var(--border-color); padding-bottom: 12px; }
-    h2 { font-size: 1.75rem; color: var(--text-primary); }
-    h3 { font-size: 1.4rem; }
-    h4 { font-size: 1.15rem; }
-    h5 { font-size: 1rem; }
-    h6 { font-size: 0.95rem; color: var(--text-secondary); }
+    /* Normalize bold/strong inside headings to prevent excessive weight */
+    h1 strong, h1 b, h2 strong, h2 b, h3 strong, h3 b,
+    h4 strong, h4 b, h5 strong, h5 b, h6 strong, h6 b {
+      font-weight: inherit;
+    }
+    h1 { font-size: ${selectedHeaderSizes.h1}; color: var(--text-primary); border-bottom: 2px solid var(--border-color); padding-bottom: 12px; }
+    h2 { font-size: ${selectedHeaderSizes.h2}; color: var(--text-primary); }
+    h3 { font-size: ${selectedHeaderSizes.h3}; }
+    h4 { font-size: ${selectedHeaderSizes.h4}; }
+    h5 { font-size: ${selectedHeaderSizes.h5}; }
+    h6 { font-size: ${selectedHeaderSizes.h6}; color: var(--text-secondary); }
     p {
       margin: 1em 0;
     }
@@ -619,8 +652,28 @@ async function convertToPDF(markdownContent, filename, jobId, opts = {}) {
     fontFamily = 'system',
     codeTheme = 'github',
     pageSize = 'A4',
-    customCSS = ''
+    customCSS = '',
+    headerFontSize = 'medium',
+    contentFontSize = 'medium'
   } = opts;
+  
+  // Font size mappings
+  const headerSizes = {
+    small: { h1: '1.75rem', h2: '1.4rem', h3: '1.15rem', h4: '1rem', h5: '0.9rem', h6: '0.85rem' },
+    medium: { h1: '2.25rem', h2: '1.75rem', h3: '1.4rem', h4: '1.15rem', h5: '1rem', h6: '0.95rem' },
+    large: { h1: '2.75rem', h2: '2.1rem', h3: '1.7rem', h4: '1.4rem', h5: '1.15rem', h6: '1.05rem' },
+    xlarge: { h1: '3.25rem', h2: '2.5rem', h3: '2rem', h4: '1.6rem', h5: '1.3rem', h6: '1.15rem' }
+  };
+  
+  const contentSizes = {
+    small: '12px',
+    medium: '14px',
+    large: '16px',
+    xlarge: '18px'
+  };
+  
+  const selectedHeaderSizes = headerSizes[headerFontSize] || headerSizes.medium;
+  const selectedContentSize = contentSizes[contentFontSize] || contentSizes.medium;
   updateProgress(jobId, 1, 'Starting');
   const processedContent = await processMermaidDiagrams(markdownContent, 'pdf', { jobId, start: 5, end: 60 });
   const htmlContent = marked(processedContent);
@@ -642,7 +695,20 @@ async function convertToPDF(markdownContent, filename, jobId, opts = {}) {
       max-width: 900px;
       margin: 0 auto;
       padding: 20px;
+      font-size: ${selectedContentSize};
     }
+    /* Normalize bold/strong inside headings to prevent excessive weight */
+    h1 strong, h1 b, h2 strong, h2 b, h3 strong, h3 b,
+    h4 strong, h4 b, h5 strong, h5 b, h6 strong, h6 b {
+      font-weight: inherit;
+    }
+    h1 { font-size: ${selectedHeaderSizes.h1}; margin-top: 1.5em; margin-bottom: 0.6em; font-weight: 600; line-height: 1.3; }
+    h2 { font-size: ${selectedHeaderSizes.h2}; margin-top: 1.5em; margin-bottom: 0.6em; font-weight: 600; line-height: 1.3; }
+    h3 { font-size: ${selectedHeaderSizes.h3}; margin-top: 1.5em; margin-bottom: 0.6em; font-weight: 600; line-height: 1.3; }
+    h4 { font-size: ${selectedHeaderSizes.h4}; margin-top: 1.5em; margin-bottom: 0.6em; font-weight: 600; line-height: 1.3; }
+    h5 { font-size: ${selectedHeaderSizes.h5}; margin-top: 1.5em; margin-bottom: 0.6em; font-weight: 600; line-height: 1.3; }
+    h6 { font-size: ${selectedHeaderSizes.h6}; margin-top: 1.5em; margin-bottom: 0.6em; font-weight: 600; line-height: 1.3; }
+    p { margin: 1em 0; }
     code {
       background-color: var(--code-background);
       padding: 2px 6px;
@@ -849,6 +915,8 @@ app.post('/convert', upload.single('markdown'), async (req, res) => {
     const codeTheme = req.body.codeTheme || 'github';
     const pageSize = req.body.pageSize || 'A4';
     const customCSS = req.body.customCSS || '';
+    const headerFontSize = req.body.headerFontSize || 'medium';
+    const contentFontSize = req.body.contentFontSize || 'medium';
     
     const jobId = req.body.jobId || null;
     if (jobId) {
@@ -876,7 +944,9 @@ app.post('/convert', upload.single('markdown'), async (req, res) => {
       fontFamily,
       codeTheme,
       pageSize,
-      customCSS
+      customCSS,
+      headerFontSize,
+      contentFontSize
     };
     
     let result;

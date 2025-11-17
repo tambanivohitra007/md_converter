@@ -194,7 +194,7 @@
                 </svg>
               </div>
               <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-3">DOCX</h3>
-              <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-3">Editable Microsoft Word documents</p>
+              <p class="text-gray-600 dark:text-gray-400 mb-4">Editable Microsoft Word documents</p>
               <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-500">
                 <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
                 <span>Editable • Office compatible</span>
@@ -327,6 +327,49 @@
             </div>
           </div>
           
+          <!-- Font Size Controls -->
+          <div class="grid gap-4 sm:grid-cols-3">
+            <div>
+              <label for="headerFontSize" class="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <span class="inline-flex items-center gap-2">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 7V4h16v3"></path>
+                    <path d="M9 20h6"></path>
+                    <path d="M12 4v16"></path>
+                  </svg>
+                  Header Font Size
+                </span>
+              </label>
+              <select id="headerFontSize"
+                class="w-full rounded-xl border border-gray-300 dark:border-gray-600/50 bg-white dark:bg-gray-700/80 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-gray-100">
+                <option value="small">Small</option>
+                <option value="medium" selected>Medium (Default)</option>
+                <option value="large">Large</option>
+                <option value="xlarge">Extra Large</option>
+              </select>
+            </div>
+            <div>
+              <label for="contentFontSize" class="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <span class="inline-flex items-center gap-2">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                  </svg>
+                  Content Font Size
+                </span>
+              </label>
+              <select id="contentFontSize"
+                class="w-full rounded-xl border border-gray-300 dark:border-gray-600/50 bg-white dark:bg-gray-700/80 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-gray-100">
+                <option value="small">Small (12px)</option>
+                <option value="medium" selected>Medium (14px)</option>
+                <option value="large">Large (16px)</option>
+                <option value="xlarge">Extra Large (18px)</option>
+              </select>
+            </div>
+          </div>
+          
           <!-- PDF Options -->
           <div class="grid gap-4 sm:grid-cols-2" id="pdfOptions">
             <div>
@@ -453,7 +496,7 @@
           <div
             class="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 hover:shadow-2xl transition-all duration-300 hover:scale-105">
             <div
-              class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 shadow-lg">
+              class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 shadow-lg group-hover:shadow-xl transition-all duration-300">
               <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2">
                 <path d="M12 19l7-7 3 3-7 7-3-3z" />
@@ -473,11 +516,14 @@
           <div
             class="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 hover:shadow-2xl transition-all duration-300 hover:scale-105">
             <div
-              class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 dark:from-purple-600 dark:to-pink-700 shadow-lg">
+              class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 dark:from-purple-600 dark:to-pink-700 shadow-lg group-hover:shadow-xl transition-all duration-300">
               <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+                <polyline points="10 9 9 9 8 9" />
               </svg>
             </div>
             <h3 class="mb-3 text-lg font-bold text-gray-800 dark:text-gray-200">Multiple Formats</h3>
@@ -491,7 +537,7 @@
           <div
             class="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 hover:shadow-2xl transition-all duration-300 hover:scale-105">
             <div
-              class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 dark:from-amber-600 dark:to-orange-700 shadow-lg">
+              class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 dark:from-amber-600 dark:to-orange-700 shadow-lg group-hover:shadow-xl transition-all duration-300">
               <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2">
                 <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />

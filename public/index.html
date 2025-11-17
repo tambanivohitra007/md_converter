@@ -327,6 +327,49 @@
             </div>
           </div>
           
+          <!-- Font Size Controls -->
+          <div class="grid gap-4 sm:grid-cols-3">
+            <div>
+              <label for="headerFontSize" class="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <span class="inline-flex items-center gap-2">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 7V4h16v3"></path>
+                    <path d="M9 20h6"></path>
+                    <path d="M12 4v16"></path>
+                  </svg>
+                  Header Font Size
+                </span>
+              </label>
+              <select id="headerFontSize"
+                class="w-full rounded-xl border border-gray-300 dark:border-gray-600/50 bg-white dark:bg-gray-700/80 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-gray-100">
+                <option value="small">Small</option>
+                <option value="medium" selected>Medium (Default)</option>
+                <option value="large">Large</option>
+                <option value="xlarge">Extra Large</option>
+              </select>
+            </div>
+            <div>
+              <label for="contentFontSize" class="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <span class="inline-flex items-center gap-2">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                  </svg>
+                  Content Font Size
+                </span>
+              </label>
+              <select id="contentFontSize"
+                class="w-full rounded-xl border border-gray-300 dark:border-gray-600/50 bg-white dark:bg-gray-700/80 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-gray-100">
+                <option value="small">Small (12px)</option>
+                <option value="medium" selected>Medium (14px)</option>
+                <option value="large">Large (16px)</option>
+                <option value="xlarge">Extra Large (18px)</option>
+              </select>
+            </div>
+          </div>
+          
           <!-- PDF Options -->
           <div class="grid gap-4 sm:grid-cols-2" id="pdfOptions">
             <div>

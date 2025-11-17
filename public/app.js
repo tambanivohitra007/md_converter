@@ -289,11 +289,15 @@ convertBtn.addEventListener('click', async () => {
     const codeThemeSelect = document.getElementById('codeTheme');
     const pageSizeSelect = document.getElementById('pageSize');
     const customCSSTextarea = document.getElementById('customCSS');
+    const headerFontSizeSelect = document.getElementById('headerFontSize');
+    const contentFontSizeSelect = document.getElementById('contentFontSize');
     
     if (outputThemeSelect) formData.append('outputTheme', outputThemeSelect.value);
     if (fontFamilySelect) formData.append('fontFamily', fontFamilySelect.value);
     if (codeThemeSelect) formData.append('codeTheme', codeThemeSelect.value);
     if (pageSizeSelect) formData.append('pageSize', pageSizeSelect.value);
+    if (headerFontSizeSelect) formData.append('headerFontSize', headerFontSizeSelect.value);
+    if (contentFontSizeSelect) formData.append('contentFontSize', contentFontSizeSelect.value);
     if (customCSSTextarea && customCSSTextarea.value.trim()) {
       formData.append('customCSS', customCSSTextarea.value.trim());
     }
