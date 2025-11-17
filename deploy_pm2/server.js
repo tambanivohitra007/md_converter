@@ -649,17 +649,25 @@ async function convertToPDF(markdownContent, filename, jobId, opts = {}) {
       border-radius: 3px;
       font-family: 'Courier New', monospace;
       color: var(--code-color);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
     pre {
       background-color: var(--code-background);
       padding: 15px;
       border-radius: 5px;
-      overflow-x: auto;
       border: 1px solid var(--code-border);
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      word-break: break-all;
     }
     pre code {
       background-color: transparent;
       padding: 0;
+      white-space: pre-wrap;
+      word-break: break-all;
+      display: block;
     }
     img {
       max-width: 100%;
