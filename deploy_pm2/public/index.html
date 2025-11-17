@@ -416,7 +416,11 @@
               </span>
             </label>
             <textarea id="customCSS" rows="4" placeholder="/* Add custom CSS rules here, e.g.:&#10;body { font-size: 16px; }&#10;h1 { color: #333; } */"
-              class="w-full rounded-xl border border-gray-300 dark:border-gray-600/50 bg-white dark:bg-gray-700/80 px-4 py-3 text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-gray-100 resize-y"></textarea>
+              class="w-full rounded-xl border border-gray-300 dark:border-gray-600/50 bg-white dark:bg-gray-700/80 px-4 py-3 text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-gray-100 resize-y">/* Normalize bold/strong inside headings to prevent excessive weight */
+h1 strong, h1 b, h2 strong, h2 b, h3 strong, h3 b,
+h4 strong, h4 b, h5 strong, h5 b, h6 strong, h6 b {
+  font-weight: inherit;
+}</textarea>
             <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Add custom CSS to style your HTML/PDF output</p>
           </div>
         </div>
